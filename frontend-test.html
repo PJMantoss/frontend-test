@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>JS Test</title>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Righteous&display=swap');
+		/*
+		TODO:
+		Do basic styling of the page. 
+		Demonstrate your knowledge of CSS3 - use things like transitions on hover.
+		*/
+ 
+        /*Base Resets*/
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		/*Styling for main-container*/
+		#main-container {
+			background: white;
+			border: 1px solid rgb(201, 199, 199);
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			max-width: 650px;
+			align-items: center;
+			margin: 50px auto;
+			border-radius: 5px;
+			padding-top: 20px;
+		}
+
+		/*Styling for Header*/
+
+		header {
+			position: sticky;
+			width: 100%;
+			height: 57px;
+			top: 0;
+			margin: 0 auto 20px auto;
+			border-bottom: 5px solid pink;
+			background: white;
+			z-index: 2;
+		}
+
+		header > img {
+			margin: 10px 0 0 330px;
+			width: 8%;
+		}
+
+		header > div {
+			display: flex;
+			justify-content: center;
+			float: right;
+			align-items: center;
+			margin-right: 200px;
+		}
+
+		header > div > .home {
+			width: 40px;
+			padding-right: 10px;
+		}
+
+		header > div > .like {
+			width: 30px;
+		}
+
+		@media (max-width: 700px){
+			header {
+				height: 50px;
+			}
+
+			header > img {
+				margin-left: 10px;
+				width: 20%;
+		   }
+
+		   header > div {
+				margin-right: 10px;
+		   }
+		}
+
+		@media (min-width: 700px) and (max-width: 990px){
+			header > img {
+				margin-left: 25px;
+				width: 12%;
+		   }
+
+		   header > div {
+				margin-right: 25px;
+		   }
+		}
+
+		/*Styling for images inside main-container*/
+
+		#main-container > img {
+			max-width: 100%;
+			height: auto;
+			border: 1px solid white;
+			margin: auto;
+			cursor: pointer;
+			transition: width 4s, height 4s;
+		}
+
+		#main-container > img:hover{
+			width: 90%;
+			height: 90%;
+		}
+
+		/*Styling for caption*/
+
+		p {
+			background: pink;
+			width: 85%;
+			margin: 1px auto 30px auto;
+			text-align: justify;
+			padding: 3px;
+			font-family: 'Open Sans', sans-serif;
+		}
+
+		p > span {
+			font-family: 'Righteous', cursive;
+		}
+
+		p:hover {
+			transform: scale(1.05);
+			background: rgb(230, 22, 56);
+			color: white;
+		}
+
+		@media (max-width: 700px){
+			p {
+				font-size: 14px;
+			}
+		}
+
+		/* Styling for footer*/
+		footer > p {
+			background: transparent !important;
+			color: black !important;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		@media (max-width: 700px){
+			footer > p {
+				font-size: 12px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div id="main-container">
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script>
+
+		$(document).ready(function(){
+			console.log("hello");
+               //Create the Header element
+			    let $header = document.createElement('header');
+				$('#main-container').before($header);
+               
+			   //Logo image source
+				let imageSrc = 'images/ig.png';
+                //Create image element to hold logo
+				let $logo = $('<img>', {
+					class: 'logo',
+					src: imageSrc
+				});
+             //Insert logo into header
+				$logo.prependTo($header);
+
+               //Home and Like icons image sources
+				let imageSrc2 = 'images/home.png';
+				let imageSrc3 = 'images/heart.png';
+
+				//Create image elements for Home and Like icons
+				let $homeIcon = $('<img>', {
+					class: 'home',
+					src: imageSrc2
+				});
+				let $likeIcon = $('<img>', {
+					class: 'like',
+					src: imageSrc3
+				});
+
+				//create container for Home and Like icons
+				let $iconDiv = document.createElement('div');
+				$($iconDiv).append($homeIcon);
+				$($iconDiv).append($likeIcon);
+
+				//Insert Home and Like icons into header
+				$($header).append($iconDiv);
+
+
+				//Create footer
+				let $footer = $('<footer>');
+				($footer).html('<p>©2020 Frontend Test by Lavender</p>');
+
+				//Insert after main container
+				$("#main-container").after($footer);
+
+            //Fill main-container with JSON data
+			$.getJSON("instagram.json", function(data) {
+				console.log(data);
+             //Extract and save images into a variable 'imageList'
+				const ImageList = data.graphql.user.edge_owner_to_timeline_media.edges;
+				//Extract only the top five images
+				const topFiveImages = ImageList.slice(0, 5);
+
+				console.log('top Five Images', topFiveImages)
+             //Iterate through the data object to print the top 5 images with their captions
+				topFiveImages.map((image, index) => {
+					const myImage = new Image();
+					myImage.src = image.node.display_url;                
+				$("#main-container").append(myImage);
+				$("#main-container")
+				.append("<p> <span>Caption<span> : " + image.node.edge_media_to_caption.edges[0].node.text + "</p>");
+				});
+			}); 
+
+
+
+		});
+	</script>
+</body>
+</html>
